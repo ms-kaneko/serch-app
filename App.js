@@ -1,8 +1,39 @@
 import React, { Component } from 'react';
 import { StyleSheet, Image, View, ScrollView } from 'react-native';
 import { Container, Header, Left, Body, Right, Button, Icon, Title, Text, Footer, Content, Card, CardItem, DatePicker, Form, Item ,Label, Input, H1, H2, H3} from 'native-base';
-export default class GeneralExample extends Component {
+import { StackNavigator } from 'react-navigation';
+// You can import from local files
+import ShopList from './components/ShopList';
+import axios from 'axios';
+
+export default class Home extends Component {
+  static navigationOptions = {
+    title: 'Home',
+  };
+  state = {
+    shops: []
+  }
+  constructor(props){
+   super(props);
+   this.state = { store_id: '' };
+ }
+
+  componentWillMount() {
+    axios.get('https://api.gnavi.co.jp/RestSearchAPI/v3/?keyid=419c281b24c712e12356fce401f4bdfb&pref=PREF13')
+         .then(res => {
+           this.setState({ shops: res.data.rest });
+         });
+  }
+  renderShops() {
+    console.log(this.state.shops);
+      return this.state.shops.map(data => {
+        return <ShopList  key={data.id} shopInfo={data} />
+      });
+    }
+
   render() {
+    const { navigate } = this.props.navigation;
+
     return (
       <Container style={styles.container}>
 
@@ -28,32 +59,9 @@ export default class GeneralExample extends Component {
           </Button>
 
       <ScrollView>
-        <Card>
-        <View style={{flex: 1, flexDirection: 'row'}}>
-        <Image style={styles.store} source={require('./assets/shop.png')} />
-        <H1 style={styles.storename}>店舗名</H1>
-        </View>
-        <H3>店舗住所</H3>
-        <H2>店舗紹介</H2>
-        </Card>
 
-        <Card>
-        <View style={{flex: 1, flexDirection: 'row'}}>
-        <Image style={styles.store} source={require('./assets/shop.png')} />
-        <H1 style={styles.storename}>店舗名</H1>
-        </View>
-        <H3>店舗住所</H3>
-        <H2>店舗紹介</H2>
-        </Card>
+          {this.renderShops()}
 
-        <Card>
-        <View style={{flex: 1, flexDirection: 'row'}}>
-        <Image style={styles.store} source={require('./assets/shop.png')} />
-        <H1 style={styles.storename}>店舗名</H1>
-        </View>
-        <H3>店舗住所</H3>
-        <H2>店舗紹介</H2>
-        </Card>
       </ScrollView>
 
         </Content>
@@ -72,6 +80,22 @@ export default class GeneralExample extends Component {
         </Footer>
       </Container>
 
+    );
+  }
+}
+
+class Detail extends React.Component {
+  static navigationOptions = {
+    title: 'Detail',
+  };
+
+  render(){
+    const { params } = this.props.navigation.state;
+    //var params = this.props.navigation.state.params;
+    return (
+      <View>
+        <Text>PARAM: [{ params.text1 }]</Text>
+      </View>
     );
   }
 }
@@ -107,4 +131,27 @@ const styles = StyleSheet.create({
         flex: 1,
   },
 
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#ecf0f1',
+  },
+  paragraph: {
+    margin: 24,
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#34495e',
+  },
+
+
 });
+
+const MyApp = StackNavigator({
+  Home: { screen: Home },
+  Detail: { screen: Detail },
+});
+
+//export default MyApp;
+AppRegistry.registerComponent('serch-app', () => MyApp);
