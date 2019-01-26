@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { StyleSheet, Image, View, ScrollView } from 'react-native';
 import { Container, Header, Left, Body, Right, Button, Icon, Title, Text, Footer, Content, Card, CardItem, DatePicker, Form, Item ,Label, Input, H1, H2, H3} from 'native-base';
-import { StackNavigator } from 'react-navigation';
+import { StackNavigator, createStackNavigator } from 'react-navigation';
 // You can import from local files
 import ShopList from './components/ShopList';
 import axios from 'axios';
 
-export default class Home extends Component {
+export class Home extends React.Component {
   static navigationOptions = {
     title: 'Home',
   };
@@ -25,15 +25,12 @@ export default class Home extends Component {
          });
   }
   renderShops() {
-    console.log(this.state.shops);
       return this.state.shops.map(data => {
         return <ShopList  key={data.id} shopInfo={data} />
       });
     }
 
   render() {
-    const { navigate } = this.props.navigation;
-
     return (
       <Container style={styles.container}>
 
@@ -85,16 +82,10 @@ export default class Home extends Component {
 }
 
 class Detail extends React.Component {
-  static navigationOptions = {
-    title: 'Detail',
-  };
-
   render(){
-    const { params } = this.props.navigation.state;
-    //var params = this.props.navigation.state.params;
     return (
       <View>
-        <Text>PARAM: [{ params.text1 }]</Text>
+        <Text>PARAM: </Text>
       </View>
     );
   }
@@ -148,10 +139,7 @@ const styles = StyleSheet.create({
 
 });
 
-const MyApp = StackNavigator({
-  Home: { screen: Home },
-  Detail: { screen: Detail },
-});
-
-//export default MyApp;
-AppRegistry.registerComponent('serch-app', () => MyApp);
+export default createStackNavigator({
+  HomeScreen: { screen: Home },
+  DetailScreen: { screen: Detail },
+})

@@ -7,7 +7,7 @@ const ShopList = ({ shopInfo }) => {
   const { name, address, image_url, pr, id } = shopInfo;
   const { imageStyle, textStyle, wrapperStyle } = styles;
   return (
-    <Card onPress={()=>navigate('Detail', { home: id })} title="Go to detail">
+    <Card onPress={() => this.props.navigation.navigate('DetailScreen')}>
     <View style={{flex: 1, flexDirection: 'row'}}>
     <Image style={styles.store} source={{ uri:image_url['shop_image1']}} />
     <H1 style={styles.storename}>{name}</H1>
