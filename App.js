@@ -1,29 +1,29 @@
 import React, { Component } from 'react';
 import { StyleSheet, Image, View, ScrollView } from 'react-native';
 import { Container, Header, Left, Body, Right, Button, Icon, Title, Text, Footer, Content, Card, CardItem, DatePicker, Form, Item ,Label, Input, H1, H2, H3} from 'native-base';
-import { StackNavigator, createStackNavigator } from 'react-navigation';
+import { StackNavigator, createStackNavigator , createBottomTabNavigator, createDrawerNavigator, createAppContainer } from 'react-navigation';
 // You can import from local files
 import ShopList from './components/ShopList';
 import axios from 'axios';
 
-export class Home extends React.Component {
+class Home extends React.Component {
   static navigationOptions = {
     title: 'Home',
   };
   state = {
     shops: []
-  }
+  };
   constructor(props){
    super(props);
    this.state = { store_id: '' };
- }
+ };
 
   componentWillMount() {
     axios.get('https://api.gnavi.co.jp/RestSearchAPI/v3/?keyid=419c281b24c712e12356fce401f4bdfb&pref=PREF13')
          .then(res => {
            this.setState({ shops: res.data.rest });
          });
-  }
+  };
   renderShops() {
       return this.state.shops.map(data => {
         return <ShopList  key={data.id} shopInfo={data} />
@@ -135,11 +135,28 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#34495e',
   },
-
-
 });
 
-export default createStackNavigator({
+const Stack = createStackNavigator(
+  {
   HomeScreen: { screen: Home },
   DetailScreen: { screen: Detail },
-})
+  },
+  {
+  initialRouteName: 'HomeScreen'
+  }
+);
+
+const AppContainer = createAppContainer(Stack);
+
+export default class App extends React.Component {
+  render() {
+    return (
+      <AppContainer
+        ref={nav => {
+          thsi.navigator = nav;
+        }}
+      />
+    );
+  }
+}
